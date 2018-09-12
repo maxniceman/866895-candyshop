@@ -75,17 +75,18 @@ var renderGoods = function (good) {
 
   var starsRating = cardItem.querySelector('.stars__rating');
   starsRating.classList.remove('stars__rating--five');
-  if (good.rating.value === 5) {
-    starsRating.classList.add('stars__rating--five');
-  } else if (good.rating.value === 4) {
-    starsRating.classList.add('stars__rating--four');
-  } else if (good.rating.value === 3) {
-    starsRating.classList.add('stars__rating--three');
-  } else if (good.rating.value === 2) {
-    starsRating.classList.add('stars__rating--two');
-  } else {
-    starsRating.classList.add('stars__rating--one');
-  }
+  switch (good.rating.value){
+    case 5:
+      starsRating.classList.add('stars__rating--five');
+    case 4:
+      starsRating.classList.add('stars__rating--four');
+    case 3:
+      starsRating.classList.add('stars__rating--three');
+    case 2:
+      starsRating.classList.add('stars__rating--two');
+    case 1:
+      starsRating.classList.add('stars__rating--one');
+  };
 
   cardItem.querySelector('.star__count').textContent = good.rating.number;
 
