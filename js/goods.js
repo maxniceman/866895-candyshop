@@ -97,6 +97,17 @@ var renderGoods = function (good) {
   }
   cardItem.querySelector('.card__composition-list').textContent = good.nutritionFacts.contents;
 
+
+
+  // add to favorite button
+  var btnFavorite = cardItem.querySelector('.card__btn-favorite');
+  btnFavorite.addEventListener('click', function (evtClick) {
+    evtClick.preventDefault();
+    this.classList.toggle('card__btn-favorite--selected');
+  });
+
+
+
   return cardItem;
 };
 // fill template
@@ -132,18 +143,3 @@ cardsInBasket.classList.remove('goods__cards--empty');
 cardsInBasket.querySelector('.goods__card-empty').classList.add('visually-hidden');
 
 
-// TODO добавление выбранного товара в избранное;
-/*5. Добавление в избранное
-5.1 Каждый товар в списке можно пометить как избранный. Для этого нужно воспользоваться кнопкой card__btn-favorite.
- После добавления в избранное, кнопка переключается в состояние, показывающее, что товар находится в избранном.
-5.2 Повторное нажатие на кнопку удаляет карточку из избранного.
-*/
-// TODO добавление выбранного товара в корзину;
-/*6. Добавление товара в корзину
-6.1 При нажатии на кнопку "Добавить +1" с классом card__btn карточка, соответствующая выбранному товару, добавляется в блок корзины.
-Если в корзине уже есть карточка, соответствующая выбранному товару, то количество выбранного товара увеличивается на единицу.
-*/
-// TODO удаление товара из корзины;
-// TODO управление количеством определенного товара в корзине;
-// TODO переключение вкладок в форме оформления заказа;
-// TODO первая фаза работы фильтра по цене.
