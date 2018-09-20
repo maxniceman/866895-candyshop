@@ -55,7 +55,7 @@ function createGoodsArray(elements) {
   return wizardsArray;
 }
 
-var goodsInBasket = {};
+var goodsInBasket = [];
 
 
 // render goods
@@ -114,7 +114,21 @@ var renderGoods = function (good) {
   var btnBuy = cardItem.querySelector('.card__btn');
   btnBuy.addEventListener('click', function (evt) {
     evt.preventDefault();
-    goodsInBasket = Object.assign(good);
+    if (good.amount === 0) return;
+    good.amount -=1;
+    var copyOfGood = Object.assign(good);
+    delete copyOfGood.amount;
+    if (goodsInBasket.length > 0) {
+      if(findInArray(goodsInBasket, good) >= 0) {
+        alert(1);
+      } else {
+        goodsInBasket.push(copyOfGood);
+        addToBasket(goodsInBasket);
+      }
+    }else {
+      goodsInBasket.push(copyOfGood);
+      addToBasket(goodsInBasket);
+    }
     console.log(goodsInBasket);
   })
 
@@ -123,6 +137,23 @@ var renderGoods = function (good) {
   return cardItem;
 };
 
+function findInArray(array, value) {
+  return array.indexOf(value);
+  return -1;
+}
+
+function addToBasket(elements) {
+  var cardsInBasket = document.querySelector('.goods__cards');
+
+  cardsInBasket.appendChild(fillBasketTemplate(goodsInBasket));
+  cardsInBasket.classList.remove('goods__cards--empty');
+  cardsInBasket.querySelector('.goods__card-empty').classList.add('visually-hidden');
+}
+
+function fillBasketTemplate(elements) {
+  var fragment = document.createDocumentFragment();
+  return fragment.appendChild(renderGoods(elements[elements.length - 1]));
+}
 
 // fill template
 function fillTemplate(goodsArray) {
@@ -133,7 +164,7 @@ function fillTemplate(goodsArray) {
   return fragment;
 }
 
-var goods = createGoodsArray(26);
+var goods = createGoodsArray(16);
 //var goodsInBasket = createGoodsArray(3);
 
 
@@ -141,21 +172,20 @@ var goods = createGoodsArray(26);
 var catalogCards = document.querySelector('.catalog__cards');
 catalogCards.classList.remove('catalog__cards--load');
 
-var cardsInBasket = document.querySelector('.goods__cards');
+
 
 var cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.catalog__card');
-
 catalogCards.appendChild(fillTemplate(goods));
-cardsInBasket.appendChild(fillTemplate(goodsInBasket));
-
-
 // hide loading data message
 catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
+
+
+
+
 // hide basket empty message
-cardsInBasket.classList.remove('goods__cards--empty');
-cardsInBasket.querySelector('.goods__card-empty').classList.add('visually-hidden');
+
 
 
 var deliverContainer = document.querySelector('.deliver');
