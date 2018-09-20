@@ -55,6 +55,9 @@ function createGoodsArray(elements) {
   return wizardsArray;
 }
 
+var goodsInBasket = {};
+
+
 // render goods
 var renderGoods = function (good) {
   var cardItem = cardTemplate.cloneNode(true);
@@ -106,10 +109,21 @@ var renderGoods = function (good) {
     this.classList.toggle('card__btn-favorite--selected');
   });
 
+  // buy btn
+
+  var btnBuy = cardItem.querySelector('.card__btn');
+  btnBuy.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    goodsInBasket = Object.assign(good);
+    console.log(goodsInBasket);
+  })
+
 
 
   return cardItem;
 };
+
+
 // fill template
 function fillTemplate(goodsArray) {
   var fragment = document.createDocumentFragment();
@@ -120,7 +134,8 @@ function fillTemplate(goodsArray) {
 }
 
 var goods = createGoodsArray(26);
-var goodsInBasket = createGoodsArray(3);
+//var goodsInBasket = createGoodsArray(3);
+
 
 // DOM manipulation for catalog cards
 var catalogCards = document.querySelector('.catalog__cards');
@@ -143,3 +158,24 @@ cardsInBasket.classList.remove('goods__cards--empty');
 cardsInBasket.querySelector('.goods__card-empty').classList.add('visually-hidden');
 
 
+var deliverContainer = document.querySelector('.deliver');
+var deliverToggle = deliverContainer.querySelector('.deliver__toggle');
+deliverToggle.addEventListener('click', function (evt) {
+  changeTabs(evt, '.deliver > div');
+})
+
+function changeTabs(evt, nodes) {
+  var target = evt.target;
+  if (target.tagName != 'INPUT') return;
+  var targetId = target.id;
+  var targets = deliverContainer.querySelectorAll(nodes);
+  for (var i=0; i<targets.length; i++){
+    var targetEl = targets[i];
+    var hasThisElement = false;
+    targetEl.classList.add('visually-hidden');
+    if (targetEl.classList.contains(targetId)) {
+      hasThisElement = true;
+      targetEl.classList.remove('visually-hidden');
+    }
+  }
+}
