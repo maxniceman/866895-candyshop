@@ -2,6 +2,7 @@
 var GOODS_NAMES = ['Чесночные сливки', 'Огуречный педант', 'Молочная хрюша', 'Грибной шейк', 'Баклажановое безумие', 'Паприколу итальяно', 'Нинзя-удар васаби', 'Хитрый баклажан', 'Горчичный вызов', 'Кедровая липучка', 'Корманный портвейн', 'Чилийский задира', 'Беконовый взрыв', 'Арахис vs виноград', 'Сельдерейная душа', 'Початок в бутылке', 'Чернющий мистер чеснок', 'Раша федераша', 'Кислая мина', 'Кукурузное утро', 'Икорный фуршет', 'Новогоднее настроение', 'С пивком потянет', 'Мисс креветка', 'Бесконечный взрыв', 'Невинные винные', 'Бельгийское пенное', 'Острый язычок'];
 var GOODS_PICTURES = ['img/cards/gum-cedar.jpg', 'img/cards/gum-chile.jpg', 'img/cards/gum-eggplant.jpg', 'img/cards/gum-mustard.jpg', 'img/cards/gum-portwine.jpg', 'img/cards/gum-wasabi.jpg', 'img/cards/ice-garlic.jpg', 'img/cards/ice-italian.jpg', 'img/cards/ice-mushroom.jpg', 'img/cards/ice-pig.jpg', 'img/cards/marmalade-beer.jpg', 'img/cards/marmalade-caviar.jpg', 'img/cards/marmalade-corn.jpg', 'img/cards/marmalade-new-year.jpg', 'img/cards/marmalade-sour.jpg', 'img/cards/marshmallow-bacon.jpg', 'img/cards/marshmallow-beer.jpg', 'img/cards/marshmallow-shrimp.jpg', 'img/cards/marshmallow-spicy.jpg', 'img/cards/marshmallow-wine.jpg', 'img/cards/soda-bacon.jpg', 'img/cards/soda-celery.jpg', 'img/cards/soda-cob.jpg', 'img/cards/soda-garlic.jpg', 'img/cards/soda-peanut-grapes.jpg', 'img/cards/soda-russian.jpg'];
 var GOODS_CONTENTS = ['молоко', 'сливки', 'вода', 'пищевой краситель', 'патока', 'ароматизатор бекона', 'ароматизатор свинца', 'ароматизатор дуба, идентичный натуральному', 'ароматизатор картофеля', 'лимонная кислота', 'загуститель', 'эмульгатор', 'консервант: сорбат калия', 'посолочная смесь: соль, нитрит натрия', 'ксилит', 'карбамид', 'вилларибо', 'виллабаджо'];
+var goodsInBasket = [];
 
 // random data function
 function randomizeData(data, stringValue) {
@@ -20,6 +21,7 @@ function randomizeData(data, stringValue) {
     return data[item];
   }
 }
+// random numbers from interval
 function randomizeNumbersFromInterval(value01, value02) {
   var number;
   if (value01 && value02) {
@@ -54,8 +56,17 @@ function createGoodsArray(elements) {
   }
   return wizardsArray;
 }
+// find item in Array
+function findInArray(array, value) {
+  return array.indexOf(value);
+  return -1;
+}
 
-var goodsInBasket = [];
+var goods = createGoodsArray(16);
+
+
+
+
 
 
 // render goods
@@ -132,28 +143,19 @@ var renderGoods = function (good) {
     console.log(goodsInBasket);
   })
 
-
-
   return cardItem;
 };
 
-function findInArray(array, value) {
-  return array.indexOf(value);
-  return -1;
-}
+var cardTemplate = document.querySelector('#card')
+  .content
+  .querySelector('.catalog__card');
 
-function addToBasket(elements) {
-  var cardsInBasket = document.querySelector('.goods__cards');
-
-  cardsInBasket.appendChild(fillBasketTemplate(goodsInBasket));
-  cardsInBasket.classList.remove('goods__cards--empty');
-  cardsInBasket.querySelector('.goods__card-empty').classList.add('visually-hidden');
-}
-
-function fillBasketTemplate(elements) {
-  var fragment = document.createDocumentFragment();
-  return fragment.appendChild(renderGoods(elements[elements.length - 1]));
-}
+// DOM manipulation for catalog cards
+var catalogCards = document.querySelector('.catalog__cards');
+catalogCards.classList.remove('catalog__cards--load');
+catalogCards.appendChild(fillTemplate(goods));
+// hide loading data message
+catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
 
 // fill template
 function fillTemplate(goodsArray) {
@@ -164,30 +166,68 @@ function fillTemplate(goodsArray) {
   return fragment;
 }
 
-var goods = createGoodsArray(16);
-//var goodsInBasket = createGoodsArray(3);
 
 
-// DOM manipulation for catalog cards
-var catalogCards = document.querySelector('.catalog__cards');
-catalogCards.classList.remove('catalog__cards--load');
+/****************
+ BASKET
+****************/
+
+var cardsInBasket = document.querySelector('.goods__cards');
 
 
+var renderBasketGoods = function (good) {
+  var cardBasketItem = basketCardTemplate.cloneNode(true);
+  cardBasketItem.querySelector('.card-order__title').textContent = good.name;
+  cardBasketItem.querySelector('.card-order__img').src = good.picture;
+  cardBasketItem.querySelector('.card-order__price').innerHTML =
+    good.price + ' <span class="card__currency">₽</span>';
+  cardBasketItem.querySelector('.card-order__count').value = 1;
+  cardBasketItem.querySelector('.card-order__close').addEventListener('click', function (evt) {
+    evt.preventDefault();
+    deleteFromBasket(good);
+  })
 
-var cardTemplate = document.querySelector('#card')
+
+  return cardBasketItem;
+};
+
+function deleteFromBasket(elem) {
+  elem.remove();
+}
+
+
+function addToBasket(elements) {
+  cardsInBasket.appendChild(fillBasketTemplate(goodsInBasket));
+  cardsInBasket.classList.remove('goods__cards--empty');
+  cardsInBasket.querySelector('.goods__card-empty').classList.add('visually-hidden');
+}
+
+var basketCardTemplate = document.querySelector('#card-order')
   .content
-  .querySelector('.catalog__card');
-catalogCards.appendChild(fillTemplate(goods));
-// hide loading data message
-catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
+  .querySelector('.goods_card');
+
+function fillBasketTemplate(elements) {
+  var fragment = document.createDocumentFragment();
+  return fragment.appendChild(renderBasketGoods(elements[elements.length - 1]));
+}
 
 
 
 
-// hide basket empty message
 
 
 
+
+
+
+
+
+
+
+
+/****************
+ DELIVERY
+ ****************/
 var deliverContainer = document.querySelector('.deliver');
 var deliverToggle = deliverContainer.querySelector('.deliver__toggle');
 deliverToggle.addEventListener('click', function (evt) {
