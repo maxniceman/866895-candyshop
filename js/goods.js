@@ -21,19 +21,20 @@ function randomizeData(data, stringValue) {
     return data[item];
   }
 }
+// random number
+function randomizeNumber(value) {
+  var number = Math.round(Math.random(value));
+  return number;
+}
 // random numbers from interval
 function randomizeNumbersFromInterval(value01, value02) {
   var number;
-  if (value01 && value02) {
-    for (var i = value01; i < value02; i++) {
-      number = Math.floor(Math.random() * i);
-    }
-  } else {
-    number = Math.round(Math.random(value01));
+  for (var i = value01; i < value02; i++) {
+    number = Math.floor(Math.random() * i);
   }
   return number;
 }
-// final wizards array
+// final goods array
 function createGoodsArray(elements) {
   var wizardsArray = [];
   for (var i = 0; i < elements; i++) {
@@ -48,26 +49,40 @@ function createGoodsArray(elements) {
         number: randomizeNumbersFromInterval(10, 900)
       },
       nutritionFacts: {
-        sugar: randomizeNumbersFromInterval(1),
+        sugar: randomizeNumber(1),
         energy: randomizeNumbersFromInterval(70, 500),
         contents: randomizeData(GOODS_CONTENTS, true)
       }
     };
   }
   return wizardsArray;
+
+}
+// find tag in parent box
+function findTag(text, tag, parentArea) {
+  var parent = document.querySelector(parentArea);
+  var Tags = parent.getElementsByTagName(tag);
+  var searchText = text;
+  var found;
+  for (var i = 0; i < Tags.length; i++) {
+    if (Tags[i].textContent === searchText) {
+      found = Tags[i];
+      break;
+    }
+  }
+  return found;
 }
 // find item in Array
 function findInArray(array, value) {
-  return array.indexOf(value);
+  for (var i = 0; i < array.length; i++) {
+    if (array[i] === value) {
+      return i;
+    }
+  }
   return -1;
 }
 
-var goods = createGoodsArray(16);
-
-
-
-
-
+var goods = createGoodsArray(3);
 
 // render goods
 var renderGoods = function (good) {
@@ -89,18 +104,23 @@ var renderGoods = function (good) {
 
   var starsRating = cardItem.querySelector('.stars__rating');
   starsRating.classList.remove('stars__rating--five');
-  switch (good.rating.value){
+  switch (good.rating.value) {
     case 5:
       starsRating.classList.add('stars__rating--five');
+      break;
     case 4:
       starsRating.classList.add('stars__rating--four');
+      break;
     case 3:
       starsRating.classList.add('stars__rating--three');
+      break;
     case 2:
       starsRating.classList.add('stars__rating--two');
+      break;
     case 1:
       starsRating.classList.add('stars__rating--one');
-  };
+      break;
+  }
 
   cardItem.querySelector('.star__count').textContent = good.rating.number;
 
@@ -111,40 +131,55 @@ var renderGoods = function (good) {
   }
   cardItem.querySelector('.card__composition-list').textContent = good.nutritionFacts.contents;
 
-
-
   // add to favorite button
   var btnFavorite = cardItem.querySelector('.card__btn-favorite');
   btnFavorite.addEventListener('click', function (evtClick) {
     evtClick.preventDefault();
-    this.classList.toggle('card__btn-favorite--selected');
+    var target = evtClick.target;
+    target.classList.toggle('card__btn-favorite--selected');
   });
 
   // buy btn
-
   var btnBuy = cardItem.querySelector('.card__btn');
   btnBuy.addEventListener('click', function (evt) {
     evt.preventDefault();
-    if (good.amount === 0) return;
-    good.amount -=1;
-    var copyOfGood = Object.assign(good);
-    delete copyOfGood.amount;
-    if (goodsInBasket.length > 0) {
-      if(findInArray(goodsInBasket, good) >= 0) {
-        alert(1);
+    if (good.amount > 0) {
+
+      var target = evt.target;
+      var parent = target.closest('.catalog__card');
+
+      var copyOfGood = Object.assign({}, good, {orderedAmount: 1});
+      delete copyOfGood.amount;
+      delete copyOfGood.nutritionFacts;
+      delete copyOfGood.rating;
+      delete copyOfGood.weight;
+      good.amount -= 1;
+      if (good.amount === 0) {
+        parent.classList.add('card--soon');
+      }
+
+      if (goodsInBasket.length > 0) {
+        var result;
+        result = goodsInBasket.filter(function (obj) {
+          return obj.name === copyOfGood.name;
+        });
+
+        if (result.length > 0) {
+          addOneMore(result);
+          updateHeaderBasketInfo();
+        } else {
+          goodsInBasket.push(copyOfGood);
+          addToBasket(goodsInBasket);
+        }
       } else {
         goodsInBasket.push(copyOfGood);
         addToBasket(goodsInBasket);
       }
-    }else {
-      goodsInBasket.push(copyOfGood);
-      addToBasket(goodsInBasket);
     }
-    console.log(goodsInBasket);
-  })
-
+  });
   return cardItem;
 };
+
 
 var cardTemplate = document.querySelector('#card')
   .content
@@ -166,45 +201,107 @@ function fillTemplate(goodsArray) {
   return fragment;
 }
 
-
-
-/****************
+/* ***************
  BASKET
 ****************/
 
 var cardsInBasket = document.querySelector('.goods__cards');
+var basketCardTemplate = document.querySelector('#card-order')
+  .content
+  .querySelector('.goods_card');
+var changingInBasket = false;
 
+function findObjectByIndex(data, property, value) {
+  for (var i = 0, l = data.length; i < l; i++) {
+    if (data[i][property] === value) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+function addOneMore(elem) {
+  goodsInBasket[findObjectByIndex(goodsInBasket, 'name', elem[0].name)].orderedAmount += 1;
+  var titleTag = findTag(elem[0].name, 'h3', '.goods__cards');
+  var parent = titleTag.closest('.goods_card');
+  var input = parent.querySelector('.card-order__count');
+  input.value = elem[0].orderedAmount;
+}
 
 var renderBasketGoods = function (good) {
   var cardBasketItem = basketCardTemplate.cloneNode(true);
   cardBasketItem.querySelector('.card-order__title').textContent = good.name;
   cardBasketItem.querySelector('.card-order__img').src = good.picture;
-  cardBasketItem.querySelector('.card-order__price').innerHTML =
-    good.price + ' <span class="card__currency">₽</span>';
+  cardBasketItem.querySelector('.card-order__price').innerHTML = good.price + ' <span class="card__currency">₽</span>';
   cardBasketItem.querySelector('.card-order__count').value = 1;
   cardBasketItem.querySelector('.card-order__close').addEventListener('click', function (evt) {
-    evt.preventDefault();
-    deleteFromBasket(good);
-  })
-
-
+    deleteFromBasket(evt, good);
+  });
+  // TODO increase items by arrown
+  cardBasketItem.querySelector('.card-order__btn--increase').addEventListener('click', function (evt) {
+    increaseItem(evt, good);
+  });
+  // TODO decrease items by arrown
+  cardBasketItem.querySelector('.card-order__btn--decrease').addEventListener('click', function (evt) {
+    decreaseItem(evt, good);
+  });
   return cardBasketItem;
 };
 
-function deleteFromBasket(elem) {
-  elem.remove();
+function deleteFromBasket(evt, elem) {
+  evt.preventDefault();
+  var target = evt.target;
+  var parent = target.parentNode;
+  parent.remove();
+  returnAmountToGood(elem);
+  goodsInBasket.splice(findInArray(goodsInBasket, elem), 1);
+  updateHeaderBasketInfo();
+  if (cardsInBasket.querySelectorAll('.goods_card').length === 0) {
+    changingInBasket = false;
+    showHideDefaultBasketText();
+    updateHeaderBasketInfo();
+  }
 }
 
+function returnAmountToGood(obj) {
+  goods[findObjectByIndex(goods, 'name', obj.name)].amount = obj.orderedAmount;
+  var titleTag = findTag(obj.name, 'h3', '.catalog__cards');
+  titleTag.closest('.catalog__card').classList.remove('card--soon');
+}
 
-function addToBasket(elements) {
+function addToBasket() {
   cardsInBasket.appendChild(fillBasketTemplate(goodsInBasket));
-  cardsInBasket.classList.remove('goods__cards--empty');
-  cardsInBasket.querySelector('.goods__card-empty').classList.add('visually-hidden');
+  changingInBasket = true;
+  updateHeaderBasketInfo();
+  if (cardsInBasket.querySelectorAll('.goods_card').length === 1) {
+    showHideDefaultBasketText();
+  }
+}
+// TODO increase
+function increaseItem(evt, elem) {
+  var target = evt.target;
+  var parent = target.parentNode;
+  var input = parent.querySelector('.card-order__count');
+  input.value = parseInt(input.value, 10) + 1;
+  elem.orderedAmount += 1;
+}
+// TODO decrease
+function decreaseItem(evt, elem) {
+  var target = evt.target;
+  var parent = target.parentNode;
+  var input = parent.querySelector('.card-order__count');
+  if (parseInt(input.value, 10) === 1) {
+    return;
+  } else {
+    input.value = parseInt(input.value, 10) - 1;
+    elem.orderedAmount -= 1;
+  }
 }
 
-var basketCardTemplate = document.querySelector('#card-order')
-  .content
-  .querySelector('.goods_card');
+function showHideDefaultBasketText() {
+  cardsInBasket.classList.toggle('goods__cards--empty');
+  cardsInBasket.querySelector('.goods__card-empty').classList.toggle('visually-hidden');
+}
 
 function fillBasketTemplate(elements) {
   var fragment = document.createDocumentFragment();
@@ -212,40 +309,83 @@ function fillBasketTemplate(elements) {
 }
 
 
+/* ****************
+ BASKET IN HEADER
+ *****************/
+var headerBasket = document.querySelector('.main-header__basket');
+var defaultInfo = headerBasket.innerHTML;
+
+function updateHeaderBasketInfo() {
+
+  if (changingInBasket) {
+    var allGoods = 0;
+    for (var i = 0; i < goodsInBasket.length; i++) {
+      allGoods += goodsInBasket[i].orderedAmount;
+    }
+    switch (allGoods) {
+      case 1:
+        headerBasket.innerHTML = 'В корзине ' + allGoods + ' товар';
+        break;
+      case 2:
+        headerBasket.innerHTML = 'В корзине ' + allGoods + ' товара';
+        break;
+      case 3:
+        headerBasket.innerHTML = 'В корзине ' + allGoods + ' товара';
+        break;
+      case 4:
+        headerBasket.innerHTML = 'В корзине ' + allGoods + ' товара';
+        break;
+      default:
+        headerBasket.innerHTML = 'В корзине ' + allGoods + ' товаров';
+    }
+  } else {
+    headerBasket.innerHTML = defaultInfo;
+  }
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-/****************
+/* ***************
  DELIVERY
  ****************/
 var deliverContainer = document.querySelector('.deliver');
 var deliverToggle = deliverContainer.querySelector('.deliver__toggle');
 deliverToggle.addEventListener('click', function (evt) {
   changeTabs(evt, '.deliver > div');
-})
+});
 
 function changeTabs(evt, nodes) {
   var target = evt.target;
-  if (target.tagName != 'INPUT') return;
+  if (target.tagName !== 'INPUT') {
+    return;
+  }
   var targetId = target.id;
   var targets = deliverContainer.querySelectorAll(nodes);
-  for (var i=0; i<targets.length; i++){
+  for (var i = 0; i < targets.length; i++) {
     var targetEl = targets[i];
-    var hasThisElement = false;
     targetEl.classList.add('visually-hidden');
     if (targetEl.classList.contains(targetId)) {
-      hasThisElement = true;
       targetEl.classList.remove('visually-hidden');
     }
   }
+}
+
+/* ***************
+ RANGE SLIDER
+ ****************/
+var rangeFilter = document.querySelector('.range__filter');
+var leftRangePrice = document.querySelector('.range__btn--left');
+var rightRangePrice = document.querySelector('.range__btn--right');
+var rangePriceMinValue = document.querySelector('.range__price--min');
+var rangePriceMaxValue = document.querySelector('.range__price--max');
+leftRangePrice.addEventListener('mouseup', function (evt) {
+  setMinMaxRange(evt, rangePriceMinValue);
+});
+rightRangePrice.addEventListener('mouseup', function (evt) {
+  setMinMaxRange(evt, rangePriceMaxValue);
+});
+
+function setMinMaxRange(evt, displayElem) {
+  var target = evt.target;
+  var value = Math.round(target.offsetLeft * 100 / rangeFilter.offsetWidth);
+  displayElem.innerHTML = value;
 }
