@@ -36,9 +36,9 @@ function randomizeNumbersFromInterval(value01, value02) {
 }
 // final goods array
 function createGoodsArray(elements) {
-  var wizardsArray = [];
+  var goodsArray = [];
   for (var i = 0; i < elements; i++) {
-    wizardsArray[i] = {
+    goodsArray[i] = {
       name: randomizeData(GOODS_NAMES),
       picture: randomizeData(GOODS_PICTURES),
       amount: randomizeNumbersFromInterval(0, 20),
@@ -55,7 +55,7 @@ function createGoodsArray(elements) {
       }
     };
   }
-  return wizardsArray;
+  return goodsArray;
 
 }
 // find tag in parent box
@@ -82,7 +82,7 @@ function findInArray(array, value) {
   return -1;
 }
 
-var goods = createGoodsArray(3);
+var goods = createGoodsArray(6);
 
 // render goods
 var renderGoods = function (good) {
@@ -133,53 +133,23 @@ var renderGoods = function (good) {
 
   // add to favorite button
   var btnFavorite = cardItem.querySelector('.card__btn-favorite');
-  btnFavorite.addEventListener('click', function (evtClick) {
-    evtClick.preventDefault();
-    var target = evtClick.target;
-    target.classList.toggle('card__btn-favorite--selected');
+  btnFavorite.addEventListener('click', function (evt) {
+    addToFavorite(evt);
   });
 
   // buy btn
   var btnBuy = cardItem.querySelector('.card__btn');
   btnBuy.addEventListener('click', function (evt) {
-    evt.preventDefault();
-    if (good.amount > 0) {
-
-      var target = evt.target;
-      var parent = target.closest('.catalog__card');
-
-      var copyOfGood = Object.assign({}, good, {orderedAmount: 1});
-      delete copyOfGood.amount;
-      delete copyOfGood.nutritionFacts;
-      delete copyOfGood.rating;
-      delete copyOfGood.weight;
-      good.amount -= 1;
-      if (good.amount === 0) {
-        parent.classList.add('card--soon');
-      }
-
-      if (goodsInBasket.length > 0) {
-        var result;
-        result = goodsInBasket.filter(function (obj) {
-          return obj.name === copyOfGood.name;
-        });
-
-        if (result.length > 0) {
-          addOneMore(result);
-          updateHeaderBasketInfo();
-        } else {
-          goodsInBasket.push(copyOfGood);
-          addToBasket(goodsInBasket);
-        }
-      } else {
-        goodsInBasket.push(copyOfGood);
-        addToBasket(goodsInBasket);
-      }
-    }
+    buyGood(evt, good);
   });
   return cardItem;
 };
 
+function addToFavorite(evt) {
+  evt.preventDefault();
+  var target = evt.target;
+  target.classList.toggle('card__btn-favorite--selected');
+}
 
 var cardTemplate = document.querySelector('#card')
   .content
@@ -210,6 +180,43 @@ var basketCardTemplate = document.querySelector('#card-order')
   .content
   .querySelector('.goods_card');
 var changingInBasket = false;
+
+function buyGood(evt, obj) {
+  evt.preventDefault();
+  if (obj.amount > 0) {
+
+    var target = evt.target;
+    var parent = target.closest('.catalog__card');
+
+    var copyOfGood = Object.assign({}, obj, {orderedAmount: 1});
+    delete copyOfGood.amount;
+    delete copyOfGood.nutritionFacts;
+    delete copyOfGood.rating;
+    delete copyOfGood.weight;
+    obj.amount -= 1;
+    if (obj.amount === 0) {
+      parent.classList.add('card--soon');
+    }
+
+    if (goodsInBasket.length > 0) {
+      var result;
+      result = goodsInBasket.filter(function (elem) {
+        return elem.name === copyOfGood.name;
+      });
+
+      if (result.length > 0) {
+        addOneMore(result);
+        updateHeaderBasketInfo();
+      } else {
+        goodsInBasket.push(copyOfGood);
+        addToBasket(goodsInBasket);
+      }
+    } else {
+      goodsInBasket.push(copyOfGood);
+      addToBasket(goodsInBasket);
+    }
+  }
+}
 
 function findObjectByIndex(data, property, value) {
   for (var i = 0, l = data.length; i < l; i++) {
