@@ -180,12 +180,12 @@
                 </li>
 
                 <li class="text-input contact-data__input-wrap">
-                  <input type="text" class="text-input__input" name="tel" id="contact-data__tel" required placeholder="Телефон">
+                  <input type="tel" minlength="10" maxlength="10" class="text-input__input" name="tel" id="contact-data__tel" required placeholder="Телефон">
                   <label for="contact-data__tel" class="text-input__label">Телефон</label>
                 </li>
 
                 <li class="text-input contact-data__input-wrap">
-                  <input type="text" class="text-input__input" name="email" id="contact-data__email" required placeholder="Почта">
+                  <input type="email" class="text-input__input" name="email" id="contact-data__email" required placeholder="Почта">
                   <label for="contact-data__email" class="text-input__label">Почта</label>
                 </li>
 
@@ -215,17 +215,17 @@
                 <div class="payment__inputs">
                   <div class="payment__card-group">
                     <p class="text-input text-input--light payment__input-wrap payment__input-wrap--card-number">
-                      <input type="text" class="text-input__input" name="card-number" id="payment__card-number" required placeholder="Номер карты">
+                      <input type="text" class="text-input__input" minlength="16" maxlength="16" name="card-number" id="payment__card-number" required placeholder="Номер карты">
                       <label class="text-input__label" for="payment__card-number">Номер карты</label>
                     </p>
 
                     <p class="text-input text-input--light payment__input-wrap payment__input-wrap--card-date">
-                      <input type="text" class="text-input__input" name="card-date" id="payment__card-date" required placeholder="мм/гг">
+                      <input type="text" class="text-input__input" minlength="5" maxlength="5" name="card-date" id="payment__card-date" required placeholder="мм/гг">
                       <label class="text-input__label" for="payment__card-date">мм/гг</label>
                     </p>
 
                     <p class="text-input text-input--light payment__input-wrap payment__input-wrap--cvc">
-                      <input type="text" class="text-input__input" name="card-cvc" id="payment__card-cvc" required placeholder="CVC">
+                      <input type="text" minlength="3" maxlength="3" class="text-input__input" name="card-cvc" id="payment__card-cvc" required placeholder="CVC">
                       <label class="text-input__label text-input__label--lock" for="payment__card-cvc">CVC</label>
                     </p>
 
@@ -342,17 +342,17 @@
                   </li>
 
                   <li class="text-input deliver__house">
-                    <input type="text" class="text-input__input" name="deliver-house" id="deliver__house" required placeholder="Дом">
+                    <input type="text" class="text-input__input" minlength="1" maxlength="4" name="deliver-house" id="deliver__house" required placeholder="Дом">
                     <label class="text-input__label" for="deliver__house">Дом</label>
                   </li>
 
                   <li class="text-input deliver__floor">
-                    <input type="text" class="text-input__input" name="deliver-floor" id="deliver__floor" required placeholder="Эт.">
+                    <input type="text" class="text-input__input" minlength="1" maxlength="3" name="deliver-floor" id="deliver__floor" required placeholder="Эт.">
                     <label class="text-input__label" for="deliver__floor">Эт.</label>
                   </li>
 
                   <li class="text-input deliver__room">
-                    <input type="text" class="text-input__input" name="deliver-room" id="deliver__room" required placeholder="Кв.">
+                    <input type="text" class="text-input__input" minlength="1" maxlength="3" name="deliver-room" id="deliver__room" required placeholder="Кв.">
                     <label class="text-input__label" for="deliver__room">Кв.</label>
                   </li>
                 </ul>
