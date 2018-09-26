@@ -370,6 +370,7 @@ function changeTabs(evt, nodes) {
   for (var i = 0; i < targets.length; i++) {
     var targetEl = targets[i];
     targetEl.classList.add('visually-hidden');
+    disableFormElements(evt);
     if (targetEl.classList.contains(targetId)) {
       targetEl.classList.remove('visually-hidden');
     }
@@ -395,4 +396,23 @@ function setMinMaxRange(evt, displayElem) {
   var target = evt.target;
   var value = Math.round(target.offsetLeft * 100 / rangeFilter.offsetWidth);
   displayElem.innerHTML = value;
+}
+
+/* ***************
+ FORM VALIDATION
+ ****************/
+
+function disableFormElements(evt) {
+  var target = evt.target;
+  if (target.tagName !== 'INPUT') {
+    return;
+  }
+  var targetId = target.id;
+  var equalClassElement = document.getElementsByClassName(targetId);
+  var elements = equalClassElement[0].querySelectorAll('input');
+  //elements.disabled = true;
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].disabled = true;
+  }
+  //console.log(equalClassElement[0].querySelectorAll('input'));
 }
