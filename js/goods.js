@@ -99,28 +99,18 @@ var renderGoods = function (good) {
   cardItem.querySelector('.card__title').textContent = good.name;
   cardItem.querySelector('.card__img').src = good.picture;
 
-  cardItem.querySelector('.card__price').innerHTML =
-    good.price + ' <span class="card__currency">₽</span><span class="card__weight">/ ' + good.weight + ' Г</span>';
+  cardItem.querySelector('.card__price').innerHTML = good.price + ' <span class="card__currency">₽</span><span class="card__weight">/ ' + good.weight + ' Г</span>';
 
   var starsRating = cardItem.querySelector('.stars__rating');
   starsRating.classList.remove('stars__rating--five');
-  switch (good.rating.value) {
-    case 5:
-      starsRating.classList.add('stars__rating--five');
-      break;
-    case 4:
-      starsRating.classList.add('stars__rating--four');
-      break;
-    case 3:
-      starsRating.classList.add('stars__rating--three');
-      break;
-    case 2:
-      starsRating.classList.add('stars__rating--two');
-      break;
-    case 1:
-      starsRating.classList.add('stars__rating--one');
-      break;
-  }
+  var ratingCls = {
+    1: 'stars__rating--one',
+    2: 'stars__rating--two',
+    3: 'stars__rating--three',
+    4: 'stars__rating--four',
+    5: 'stars__rating--five',
+  };
+  starsRating.classList.add(ratingCls[good.rating.value]);
 
   cardItem.querySelector('.star__count').textContent = good.rating.number;
 
@@ -320,7 +310,7 @@ function fillBasketTemplate(elements) {
  BASKET IN HEADER
  *****************/
 var headerBasket = document.querySelector('.main-header__basket');
-var defaultInfo = headerBasket.innerHTML;
+var defaultInfo = headerBasket.textContent;
 
 function updateHeaderBasketInfo() {
 
@@ -331,22 +321,22 @@ function updateHeaderBasketInfo() {
     }
     switch (allGoods) {
       case 1:
-        headerBasket.innerHTML = 'В корзине ' + allGoods + ' товар';
+        headerBasket.textContent = 'В корзине ' + allGoods + ' товар';
         break;
       case 2:
-        headerBasket.innerHTML = 'В корзине ' + allGoods + ' товара';
+        headerBasket.textContent = 'В корзине ' + allGoods + ' товара';
         break;
       case 3:
-        headerBasket.innerHTML = 'В корзине ' + allGoods + ' товара';
+        headerBasket.textContent = 'В корзине ' + allGoods + ' товара';
         break;
       case 4:
-        headerBasket.innerHTML = 'В корзине ' + allGoods + ' товара';
+        headerBasket.textContent = 'В корзине ' + allGoods + ' товара';
         break;
       default:
-        headerBasket.innerHTML = 'В корзине ' + allGoods + ' товаров';
+        headerBasket.textContent = 'В корзине ' + allGoods + ' товаров';
     }
   } else {
-    headerBasket.innerHTML = defaultInfo;
+    headerBasket.textContent = defaultInfo;
   }
 }
 
@@ -370,8 +360,12 @@ function changeTabs(evt, nodes) {
   for (var i = 0; i < targets.length; i++) {
     var targetEl = targets[i];
     targetEl.classList.add('visually-hidden');
+
     if (targetEl.classList.contains(targetId)) {
       targetEl.classList.remove('visually-hidden');
+      disableEnableFormElements(targetEl);
+    } else {
+      disableEnableFormElements(targetEl);
     }
   }
 }
@@ -394,5 +388,59 @@ rightRangePrice.addEventListener('mouseup', function (evt) {
 function setMinMaxRange(evt, displayElem) {
   var target = evt.target;
   var value = Math.round(target.offsetLeft * 100 / rangeFilter.offsetWidth);
-  displayElem.innerHTML = value;
+  displayElem.textContent = value;
 }
+
+/* ***************
+ FORM VALIDATION
+ ****************/
+
+var submitBtn = document.querySelector('.buy__submit-btn');
+submitBtn.addEventListener('click', function () {
+  checkCardNumber();
+});
+
+function checkCardNumber() {
+  var cardNumberInput = document.querySelector('#payment__card-number');
+  var numbers = cardNumberInput.value;
+  var numbersArray = numbers.split('').map(function (x) {
+    return parseInt(x, 10);
+  });
+  var finalSum = 0;
+
+  for (var i = 0; i < numbersArray.length; i++) {
+    var item = numbersArray[i];
+    if (i % 2 === 0) {
+      var intermediateValue = item * 2;
+      if (intermediateValue >= 9) {
+        intermediateValue -= 9;
+      }
+      numbersArray[i] = intermediateValue;
+    }
+  }
+
+  for (var j = 0; j < numbersArray.length; j++) {
+    finalSum += numbersArray[j];
+  }
+
+  if (finalSum % 10 !== 0) {
+    cardNumberInput.setCustomValidity('Пожалуйста введите правильный номер карты');
+    return false;
+  } else {
+    cardNumberInput.setCustomValidity('');
+    return true;
+  }
+}
+
+function disableEnableFormElements(elt) {
+  var elements = elt.querySelectorAll('input');
+  for (var i = 0; i < elements.length; i++) {
+    if (elements[i].disabled) {
+      elements[i].disabled = false;
+    } else {
+      elements[i].disabled = true;
+    }
+  }
+}
+var deliverCourierBox = document.querySelector('.deliver__courier');
+disableEnableFormElements(deliverCourierBox);
