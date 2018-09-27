@@ -374,16 +374,48 @@ function changeTabs(evt, nodes) {
  RANGE SLIDER
  ****************/
 var rangeFilter = document.querySelector('.range__filter');
+var rangeLine = document.querySelector('.range__fill-line');
 var leftRangePrice = document.querySelector('.range__btn--left');
 var rightRangePrice = document.querySelector('.range__btn--right');
 var rangePriceMinValue = document.querySelector('.range__price--min');
 var rangePriceMaxValue = document.querySelector('.range__price--max');
-leftRangePrice.addEventListener('mouseup', function (evt) {
-  setMinMaxRange(evt, rangePriceMinValue);
+
+setDefaultValueSlider(0, 100);
+
+leftRangePrice.addEventListener('mousedown', function (evt) {
+  var target = evt.target;
+  target.addEventListener('mouseup', function () {
+    setMinMaxRange(evt, rangePriceMinValue);
+  });
+  target.addEventListener('mousemove', function () {
+    moveRangePrice(evt);
+  });
+})
+
+rightRangePrice.addEventListener('mousedown', function (evt) {
+  var target = evt.target;
+  target.addEventListener('mouseup', function () {
+    setMinMaxRange(evt, rangePriceMaxValue);
+  });
+  target.addEventListener('mousemove', function () {
+    moveRangePrice(evt);
+  });
 });
-rightRangePrice.addEventListener('mouseup', function (evt) {
-  setMinMaxRange(evt, rangePriceMaxValue);
-});
+
+function setDefaultValueSlider(minValue, maxValue) {
+  leftRangePrice.style.left = 0;
+  rightRangePrice.style.left = '100%';
+  rangeLine.style.left = 0;
+  rangeLine.style.right = 0;
+  rangePriceMinValue.textContent = minValue;
+  rangePriceMaxValue.textContent = maxValue;
+}
+
+function moveRangePrice(evt) {
+  var target = evt.target;
+  var startPoint = target.offsetLeft;
+  target.style.left = target.offsetLeft;
+}
 
 function setMinMaxRange(evt, displayElem) {
   var target = evt.target;
