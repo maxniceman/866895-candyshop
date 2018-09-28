@@ -373,6 +373,7 @@ function changeTabs(evt, nodes) {
 /* ***************
  RANGE SLIDER
  ****************/
+//TODO rename to elem
 var rangeFilter = document.querySelector('.range__filter');
 var rangeLine = document.querySelector('.range__fill-line');
 var leftRangePrice = document.querySelector('.range__btn--left');
@@ -381,71 +382,83 @@ var rangePriceMinValue = document.querySelector('.range__price--min');
 var rangePriceMaxValue = document.querySelector('.range__price--max');
 var leftBorder = rangeFilter.offsetLeft;
 var rightBorder = rangeFilter.offsetLeft + rangeFilter.offsetWidth;
-console.log(leftBorder);
 setDefaultValueSlider(0, 100);
-
+var defaultRangePriceMaxValue = rangePriceMaxValue.textContent;
 leftRangePrice.addEventListener('mousedown', function (evt) {
   var target = evt.target;
   var startCoords = {
     x: evt.clientX
   };
-
-  var dragged = false;
-
   var onMouseMove = function (evt) {
     target.style.background = 'red';
-    evt.preventDefault();
-    dragged = true;
     var shift = {
       x: startCoords.x - evt.clientX
     };
     startCoords = {
       x: evt.clientX
     };
-    console.log(startCoords.x);
     if(startCoords.x > leftBorder) {
-      var position = (target.offsetLeft - shift.x);
+      console.log(shift.x);
+      var position = target.offsetLeft - shift.x;
       target.style.left = position + 'px';
-      setMinMaxRange(rangePriceMinValue, position);
-      colorRange(position);
+      setMinRange(rangePriceMinValue, position);
+      colorRangeLeftPoint(position);
     } else {
       setMinMaxRange(rangePriceMinValue, 0);
     }
   };
 
   var onMouseUp = function (evt) {
-    //evt.preventDefault();
-
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
-
-
   };
-
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
-
-  // target.addEventListener('mouseup', function (evt) {
-  //   setMinMaxRange(evt, rangePriceMinValue);
-  // });
-  // target.addEventListener('mousemove', function (evt) {
-  //   moveRangePrice(evt);
-  // });
 })
 
 rightRangePrice.addEventListener('mousedown', function (evt) {
   var target = evt.target;
-  target.addEventListener('mouseup', function (evt) {
-    //setMinMaxRange(evt, rangePriceMaxValue);
-  });
-  target.addEventListener('mousemove', function (evt) {
-    moveRangePrice(evt);
-  });
+
+  var startCoords = {
+    x: evt.clientX
+  };
+  var onMouseMove = function (evt) {
+    var targetRightPosition = parseInt(target.style.right);
+    target.style.background = 'red';
+
+    var shift = {
+      x:  evt.clientX - startCoords.x
+    };
+
+    // console.log(shift.x);
+    startCoords = {
+      x: evt.clientX
+    };
+    // console.log(target.offsetLeft - shift.x)
+    //console.log(startCoords.x)
+    if(startCoords.x < rightBorder) {
+
+       var position =  targetRightPosition - shift.x;
+
+      target.style.right = position + 'px';
+      setMaxRange(rangePriceMaxValue, position);
+      colorRangeRightPoint(position);
+    } else {
+     setMaxRange(rangePriceMaxValue, 1);
+    }
+  };
+
+  var onMouseUp = function (evt) {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 });
 
 function setDefaultValueSlider(minValue, maxValue) {
   leftRangePrice.style.left = 0;
-  rightRangePrice.style.left = '100%';
+  rightRangePrice.style.right = 0;
   rangeLine.style.left = 0;
   rangeLine.style.right = 0;
   rangePriceMinValue.textContent = minValue;
@@ -455,22 +468,22 @@ function setDefaultValueSlider(minValue, maxValue) {
   leftRangePrice.style.zIndex = 10;
 }
 
-function moveRangePrice(evt) {
-  var target = evt.target;
-  var parent = target.parentNode;
-  target.style.background = 'red';
 
-  target.style.left = (evt.pageX - parent.offsetLeft) + 'px';
-}
 
-function setMinMaxRange(displayElem, value) {
+function setMinRange(displayElem, value) {
   var value = Math.round(value * 100 / rangeFilter.offsetWidth);
   displayElem.textContent = value;
 }
-function colorRange(value) {
+function setMaxRange(displayElem, value) {
+  var value = defaultRangePriceMaxValue - Math.round(value * 100 / rangeFilter.offsetWidth);
+  displayElem.textContent = value;
+}
+function colorRangeLeftPoint(value) {
   rangeLine.style.left = value + 'px';
 }
-
+function colorRangeRightPoint(value) {
+  rangeLine.style.right = value + 'px';
+}
 
 
 
