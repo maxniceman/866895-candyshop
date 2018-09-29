@@ -374,15 +374,17 @@ function changeTabs(evt, nodes) {
  RANGE SLIDER
  ****************/
 //TODO rename to elem
+var minGoodPrice = 0;
+var maxGoodPrice = 1000;
 var rangeFilter = document.querySelector('.range__filter');
 var rangeLine = document.querySelector('.range__fill-line');
 var leftRangePrice = document.querySelector('.range__btn--left');
 var rightRangePrice = document.querySelector('.range__btn--right');
 var rangePriceMinValue = document.querySelector('.range__price--min');
 var rangePriceMaxValue = document.querySelector('.range__price--max');
-var leftBorder = rangeFilter.offsetLeft;
-var rightBorder = rangeFilter.offsetLeft + rangeFilter.offsetWidth;
-setDefaultValueSlider(0, 100);
+var leftBorder = rangeFilter.offsetLeft + leftRangePrice.offsetWidth / 2;
+var rightBorder = rangeFilter.offsetLeft + rangeFilter.offsetWidth + rightRangePrice.offsetWidth / 2;
+setDefaultValueSlider(minGoodPrice, maxGoodPrice);
 var defaultRangePriceMaxValue = rangePriceMaxValue.textContent;
 leftRangePrice.addEventListener('mousedown', function (evt) {
   var target = evt.target;
@@ -397,14 +399,25 @@ leftRangePrice.addEventListener('mousedown', function (evt) {
     startCoords = {
       x: evt.clientX
     };
+    console.log(target.offsetLeft)
+    console.log(rightRangePrice.offsetLeft)
+    //if(startCoords.x > leftBorder || target.offsetLeft === rightRangePrice.offsetLeft) {
     if(startCoords.x > leftBorder) {
-      console.log(shift.x);
       var position = target.offsetLeft - shift.x;
-      target.style.left = position + 'px';
-      setMinRange(rangePriceMinValue, position);
-      colorRangeLeftPoint(position);
+      if(target.offsetLeft < rightRangePrice.offsetLeft){
+
+        target.style.left = position + 'px';
+        setMinRange(rangePriceMinValue, position);
+        colorRangeLeftPoint(position);
+      } else {
+        //console.log(position)
+        //var position = target.offsetLeft - shift.x;
+        //target.style.left = position + 'px';
+        //setMinRange(rangePriceMinValue, position);
+        //colorRangeLeftPoint(position);
+      }
     } else {
-      setMinMaxRange(rangePriceMinValue, 0);
+      setMinRange(rangePriceMinValue, minGoodPrice);
     }
   };
 
@@ -418,33 +431,25 @@ leftRangePrice.addEventListener('mousedown', function (evt) {
 
 rightRangePrice.addEventListener('mousedown', function (evt) {
   var target = evt.target;
-
   var startCoords = {
     x: evt.clientX
   };
   var onMouseMove = function (evt) {
-    var targetRightPosition = parseInt(target.style.right);
-    target.style.background = 'red';
-
+    target.style.background = 'green';
     var shift = {
-      x:  evt.clientX - startCoords.x
+      x: startCoords.x - evt.clientX
     };
-
-    // console.log(shift.x);
     startCoords = {
       x: evt.clientX
     };
-    // console.log(target.offsetLeft - shift.x)
-    //console.log(startCoords.x)
     if(startCoords.x < rightBorder) {
-
-       var position =  targetRightPosition - shift.x;
-
-      target.style.right = position + 'px';
+      //console.log(shift.x);
+      var position = target.offsetLeft - shift.x;
+      target.style.left = position + 'px';
       setMaxRange(rangePriceMaxValue, position);
       colorRangeRightPoint(position);
     } else {
-     setMaxRange(rangePriceMaxValue, 1);
+      setMaxRange(rangePriceMaxValue, maxGoodPrice);
     }
   };
 
@@ -454,6 +459,44 @@ rightRangePrice.addEventListener('mousedown', function (evt) {
   };
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
+
+  // var target = evt.target;
+  //
+  // var startCoords = {
+  //   x: evt.clientX
+  // };
+  // var onMouseMove = function (evt) {
+  //   var targetRightPosition = parseInt(target.style.right);
+  //   target.style.background = 'red';
+  //
+  //   var shift = {
+  //     x:  evt.clientX - startCoords.x
+  //   };
+  //
+  //   // console.log(shift.x);
+  //   startCoords = {
+  //     x: evt.clientX
+  //   };
+  //   // console.log(target.offsetLeft - shift.x)
+  //   //console.log(startCoords.x)
+  //   if(startCoords.x < rightBorder) {
+  //
+  //      var position =  targetRightPosition - shift.x ;
+  //
+  //     target.style.right = position + 'px';
+  //     setMaxRange(rangePriceMaxValue, position);
+  //     colorRangeRightPoint(position);
+  //   } else {
+  //    setMaxRange(rangePriceMaxValue, 1);
+  //   }
+  // };
+  //
+  // var onMouseUp = function (evt) {
+  //   document.removeEventListener('mousemove', onMouseMove);
+  //   document.removeEventListener('mouseup', onMouseUp);
+  // };
+  // document.addEventListener('mousemove', onMouseMove);
+  // document.addEventListener('mouseup', onMouseUp);
 });
 
 function setDefaultValueSlider(minValue, maxValue) {
@@ -471,18 +514,18 @@ function setDefaultValueSlider(minValue, maxValue) {
 
 
 function setMinRange(displayElem, value) {
-  var value = Math.round(value * 100 / rangeFilter.offsetWidth);
-  displayElem.textContent = value;
+  var text = Math.round(value * maxGoodPrice / rangeFilter.offsetWidth);
+  displayElem.textContent = text;
 }
 function setMaxRange(displayElem, value) {
-  var value = defaultRangePriceMaxValue - Math.round(value * 100 / rangeFilter.offsetWidth);
-  displayElem.textContent = value;
+  var text = Math.round(value * maxGoodPrice / rangeFilter.offsetWidth);
+  displayElem.textContent = text;
 }
 function colorRangeLeftPoint(value) {
   rangeLine.style.left = value + 'px';
 }
 function colorRangeRightPoint(value) {
-  rangeLine.style.right = value + 'px';
+  rangeLine.style.right = rangeFilter.offsetWidth - value + 'px';
 }
 
 
