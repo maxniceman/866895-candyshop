@@ -385,13 +385,15 @@ var rangePriceMaxValue = document.querySelector('.range__price--max');
 var leftBorder = rangeFilter.offsetLeft + leftRangePrice.offsetWidth / 2;
 var rightBorder = rangeFilter.offsetLeft + rangeFilter.offsetWidth + rightRangePrice.offsetWidth / 2;
 setDefaultValueSlider(minGoodPrice, maxGoodPrice);
-var defaultRangePriceMaxValue = rangePriceMaxValue.textContent;
+var direction = '';
+var  oldx = 0;
 leftRangePrice.addEventListener('mousedown', function (evt) {
   var target = evt.target;
   var startCoords = {
     x: evt.clientX
   };
   var onMouseMove = function (evt) {
+    moveSide(evt);
     target.style.background = 'red';
     var shift = {
       x: startCoords.x - evt.clientX
@@ -399,28 +401,17 @@ leftRangePrice.addEventListener('mousedown', function (evt) {
     startCoords = {
       x: evt.clientX
     };
-    console.log(target.offsetLeft)
-    console.log(rightRangePrice.offsetLeft)
-    //if(startCoords.x > leftBorder || target.offsetLeft === rightRangePrice.offsetLeft) {
     if(startCoords.x > leftBorder) {
       var position = target.offsetLeft - shift.x;
-      if(target.offsetLeft < rightRangePrice.offsetLeft){
-
+      if(target.offsetLeft < rightRangePrice.offsetLeft || direction === 'left'){
         target.style.left = position + 'px';
         setMinRange(rangePriceMinValue, position);
         colorRangeLeftPoint(position);
-      } else {
-        //console.log(position)
-        //var position = target.offsetLeft - shift.x;
-        //target.style.left = position + 'px';
-        //setMinRange(rangePriceMinValue, position);
-        //colorRangeLeftPoint(position);
       }
     } else {
       setMinRange(rangePriceMinValue, minGoodPrice);
     }
   };
-
   var onMouseUp = function (evt) {
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
@@ -435,6 +426,7 @@ rightRangePrice.addEventListener('mousedown', function (evt) {
     x: evt.clientX
   };
   var onMouseMove = function (evt) {
+    moveSide(evt);
     target.style.background = 'green';
     var shift = {
       x: startCoords.x - evt.clientX
@@ -443,13 +435,14 @@ rightRangePrice.addEventListener('mousedown', function (evt) {
       x: evt.clientX
     };
     if(startCoords.x < rightBorder) {
-      //console.log(shift.x);
       var position = target.offsetLeft - shift.x;
-      target.style.left = position + 'px';
-      setMaxRange(rangePriceMaxValue, position);
-      colorRangeRightPoint(position);
+      if(target.offsetLeft > leftRangePrice.offsetLeft || direction === 'right') {
+        target.style.left = position + 'px';
+        setMaxRange(rangePriceMaxValue, position);
+        colorRangeRightPoint(position);
+      }
     } else {
-      setMaxRange(rangePriceMaxValue, maxGoodPrice);
+      setMaxRange(rangePriceMaxValue, rangeFilter.offsetWidth);
     }
   };
 
@@ -459,45 +452,16 @@ rightRangePrice.addEventListener('mousedown', function (evt) {
   };
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
-
-  // var target = evt.target;
-  //
-  // var startCoords = {
-  //   x: evt.clientX
-  // };
-  // var onMouseMove = function (evt) {
-  //   var targetRightPosition = parseInt(target.style.right);
-  //   target.style.background = 'red';
-  //
-  //   var shift = {
-  //     x:  evt.clientX - startCoords.x
-  //   };
-  //
-  //   // console.log(shift.x);
-  //   startCoords = {
-  //     x: evt.clientX
-  //   };
-  //   // console.log(target.offsetLeft - shift.x)
-  //   //console.log(startCoords.x)
-  //   if(startCoords.x < rightBorder) {
-  //
-  //      var position =  targetRightPosition - shift.x ;
-  //
-  //     target.style.right = position + 'px';
-  //     setMaxRange(rangePriceMaxValue, position);
-  //     colorRangeRightPoint(position);
-  //   } else {
-  //    setMaxRange(rangePriceMaxValue, 1);
-  //   }
-  // };
-  //
-  // var onMouseUp = function (evt) {
-  //   document.removeEventListener('mousemove', onMouseMove);
-  //   document.removeEventListener('mouseup', onMouseUp);
-  // };
-  // document.addEventListener('mousemove', onMouseMove);
-  // document.addEventListener('mouseup', onMouseUp);
 });
+
+function moveSide(evt) {
+  if (evt.pageX < oldx) {
+    direction = "left"
+  } else if (evt.pageX > oldx) {
+    direction = "right"
+  }
+  oldx = evt.pageX;
+}
 
 function setDefaultValueSlider(minValue, maxValue) {
   leftRangePrice.style.left = 0;
