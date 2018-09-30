@@ -383,40 +383,44 @@ var rangePriceMinValue = document.querySelector('.range__price--min');
 var rangePriceMaxValue = document.querySelector('.range__price--max');
 var leftBorder = rangeFilter.offsetLeft + leftRangePrice.offsetWidth / 2;
 var rightBorder = rangeFilter.offsetLeft + rangeFilter.offsetWidth - rightRangePrice.offsetWidth / 2;
-var direction = '';
-var oldx = 0;
+
 setDefaultValueSlider(minGoodPrice, maxGoodPrice);
 function setDefaultValueSlider(minValue, maxValue) {
   leftRangePrice.style.left = 0;
-  rightRangePrice.style.right = 0;
+  rightRangePrice.style.left = rangeFilter.offsetWidth - rightRangePrice.offsetWidth + 'px';
+  rightRangePrice.style.right = 'auto';
   rangeLine.style.left = 0;
   rangeLine.style.right = 0;
   rangePriceMinValue.textContent = minValue;
   rangePriceMaxValue.textContent = maxValue;
 
-
+  // без z-index конфликт с полосой слайдера - она перекрывает левый бегунок
   leftRangePrice.style.zIndex = 10;
 }
 
 leftRangePrice.addEventListener('mousedown', function (evt) {
+  var rightRangePriceStop = parseInt(rightRangePrice.style.left, 10);
   var target = evt.target;
   var startCoords = {
     x: evt.clientX
   };
   var onMouseMove = function (moveEvt) {
-    moveSide(moveEvt);
     var shift = {
       x: startCoords.x - moveEvt.clientX
     };
     startCoords = {
       x: moveEvt.clientX
     };
+    var position = target.offsetLeft - shift.x;
     if (startCoords.x > leftBorder) {
-      var position = target.offsetLeft - shift.x;
-      if (target.offsetLeft < rightRangePrice.offsetLeft || direction === 'left') {
+      if (startCoords.x < rightRangePriceStop + rangeFilter.offsetLeft) {
         target.style.left = position + 'px';
         setMinMaxRange(rangePriceMinValue, position);
         colorRangeLeftPoint(position);
+      } else {
+        target.style.left = rightRangePriceStop + 'px';
+        setMinMaxRange(rangePriceMinValue, rightRangePriceStop);
+        colorRangeLeftPoint(rightRangePriceStop);
       }
     } else {
       target.style.left = minGoodPrice + 'px';
@@ -433,27 +437,31 @@ leftRangePrice.addEventListener('mousedown', function (evt) {
 });
 
 rightRangePrice.addEventListener('mousedown', function (evt) {
+  var leftRangePriceStop = parseInt(leftRangePrice.style.left, 10);
   var target = evt.target;
   var startCoords = {
     x: evt.clientX
   };
   var onMouseMove = function (moveEvt) {
-    moveSide(moveEvt);
     var shift = {
       x: startCoords.x - moveEvt.clientX
     };
     startCoords = {
       x: moveEvt.clientX
     };
+    var position = target.offsetLeft - shift.x;
     if (startCoords.x < rightBorder) {
-      var position = target.offsetLeft - shift.x;
-      if (target.offsetLeft > leftRangePrice.offsetLeft || direction === 'right') {
+      if (startCoords.x > leftRangePriceStop + rangeFilter.offsetLeft) {
         target.style.left = position + 'px';
         setMinMaxRange(rangePriceMaxValue, position);
         colorRangeRightPoint(position);
+      } else {
+        target.style.left = leftRangePriceStop + 'px';
+        setMinMaxRange(rangePriceMaxValue, leftRangePriceStop);
+        colorRangeRightPoint(leftRangePriceStop);
       }
     } else {
-      target.style.left = rangeFilter.offsetWidth + 'px';
+      target.style.left = rangeFilter.offsetWidth - rightRangePrice.offsetWidth + 'px';
       colorRangeRightPoint(rangeFilter.offsetWidth);
       setMinMaxRange(rangePriceMaxValue, rangeFilter.offsetWidth);
     }
@@ -466,15 +474,6 @@ rightRangePrice.addEventListener('mousedown', function (evt) {
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
 });
-
-function moveSide(evt) {
-  if (evt.pageX < oldx) {
-    direction = 'left';
-  } else if (evt.pageX > oldx) {
-    direction = 'right';
-  }
-  oldx = evt.pageX;
-}
 
 function setMinMaxRange(displayElem, value) {
   var text = Math.round(value * maxGoodPrice / rangeFilter.offsetWidth);
