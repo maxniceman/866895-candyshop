@@ -419,6 +419,8 @@ leftRangePrice.addEventListener('mousedown', function (evt) {
         colorRangeLeftPoint(position);
       }
     } else {
+      target.style.left = minGoodPrice + 'px';
+      colorRangeLeftPoint(minGoodPrice);
       setMinMaxRange(rangePriceMinValue, minGoodPrice);
     }
   };
@@ -451,6 +453,8 @@ rightRangePrice.addEventListener('mousedown', function (evt) {
         colorRangeRightPoint(position);
       }
     } else {
+      target.style.left = rangeFilter.offsetWidth + 'px';
+      colorRangeRightPoint(rangeFilter.offsetWidth);
       setMinMaxRange(rangePriceMaxValue, rangeFilter.offsetWidth);
     }
   };
