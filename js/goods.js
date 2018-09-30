@@ -373,7 +373,6 @@ function changeTabs(evt, nodes) {
 /* ***************
  RANGE SLIDER
  ****************/
-//TODO rename to elem
 var minGoodPrice = 0;
 var maxGoodPrice = 1000;
 var rangeFilter = document.querySelector('.range__filter');
@@ -383,86 +382,10 @@ var rightRangePrice = document.querySelector('.range__btn--right');
 var rangePriceMinValue = document.querySelector('.range__price--min');
 var rangePriceMaxValue = document.querySelector('.range__price--max');
 var leftBorder = rangeFilter.offsetLeft + leftRangePrice.offsetWidth / 2;
-var rightBorder = rangeFilter.offsetLeft + rangeFilter.offsetWidth + rightRangePrice.offsetWidth / 2;
-setDefaultValueSlider(minGoodPrice, maxGoodPrice);
+var rightBorder = rangeFilter.offsetLeft + rangeFilter.offsetWidth - rightRangePrice.offsetWidth / 2;
 var direction = '';
-var  oldx = 0;
-leftRangePrice.addEventListener('mousedown', function (evt) {
-  var target = evt.target;
-  var startCoords = {
-    x: evt.clientX
-  };
-  var onMouseMove = function (evt) {
-    moveSide(evt);
-    target.style.background = 'red';
-    var shift = {
-      x: startCoords.x - evt.clientX
-    };
-    startCoords = {
-      x: evt.clientX
-    };
-    if(startCoords.x > leftBorder) {
-      var position = target.offsetLeft - shift.x;
-      if(target.offsetLeft < rightRangePrice.offsetLeft || direction === 'left'){
-        target.style.left = position + 'px';
-        setMinRange(rangePriceMinValue, position);
-        colorRangeLeftPoint(position);
-      }
-    } else {
-      setMinRange(rangePriceMinValue, minGoodPrice);
-    }
-  };
-  var onMouseUp = function (evt) {
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
-  };
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
-})
-
-rightRangePrice.addEventListener('mousedown', function (evt) {
-  var target = evt.target;
-  var startCoords = {
-    x: evt.clientX
-  };
-  var onMouseMove = function (evt) {
-    moveSide(evt);
-    target.style.background = 'green';
-    var shift = {
-      x: startCoords.x - evt.clientX
-    };
-    startCoords = {
-      x: evt.clientX
-    };
-    if(startCoords.x < rightBorder) {
-      var position = target.offsetLeft - shift.x;
-      if(target.offsetLeft > leftRangePrice.offsetLeft || direction === 'right') {
-        target.style.left = position + 'px';
-        setMaxRange(rangePriceMaxValue, position);
-        colorRangeRightPoint(position);
-      }
-    } else {
-      setMaxRange(rangePriceMaxValue, rangeFilter.offsetWidth);
-    }
-  };
-
-  var onMouseUp = function (evt) {
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
-  };
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
-});
-
-function moveSide(evt) {
-  if (evt.pageX < oldx) {
-    direction = "left"
-  } else if (evt.pageX > oldx) {
-    direction = "right"
-  }
-  oldx = evt.pageX;
-}
-
+var oldx = 0;
+setDefaultValueSlider(minGoodPrice, maxGoodPrice);
 function setDefaultValueSlider(minValue, maxValue) {
   leftRangePrice.style.left = 0;
   rightRangePrice.style.right = 0;
@@ -475,13 +398,81 @@ function setDefaultValueSlider(minValue, maxValue) {
   leftRangePrice.style.zIndex = 10;
 }
 
+leftRangePrice.addEventListener('mousedown', function (evt) {
+  var target = evt.target;
+  var startCoords = {
+    x: evt.clientX
+  };
+  var onMouseMove = function (moveEvt) {
+    moveSide(moveEvt);
+    var shift = {
+      x: startCoords.x - moveEvt.clientX
+    };
+    startCoords = {
+      x: moveEvt.clientX
+    };
+    if (startCoords.x > leftBorder) {
+      var position = target.offsetLeft - shift.x;
+      if (target.offsetLeft < rightRangePrice.offsetLeft || direction === 'left') {
+        target.style.left = position + 'px';
+        setMinMaxRange(rangePriceMinValue, position);
+        colorRangeLeftPoint(position);
+      }
+    } else {
+      setMinMaxRange(rangePriceMinValue, minGoodPrice);
+    }
+  };
+  var onMouseUp = function () {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
 
+rightRangePrice.addEventListener('mousedown', function (evt) {
+  var target = evt.target;
+  var startCoords = {
+    x: evt.clientX
+  };
+  var onMouseMove = function (moveEvt) {
+    moveSide(moveEvt);
+    var shift = {
+      x: startCoords.x - moveEvt.clientX
+    };
+    startCoords = {
+      x: moveEvt.clientX
+    };
+    if (startCoords.x < rightBorder) {
+      var position = target.offsetLeft - shift.x;
+      if (target.offsetLeft > leftRangePrice.offsetLeft || direction === 'right') {
+        target.style.left = position + 'px';
+        setMinMaxRange(rangePriceMaxValue, position);
+        colorRangeRightPoint(position);
+      }
+    } else {
+      setMinMaxRange(rangePriceMaxValue, rangeFilter.offsetWidth);
+    }
+  };
 
-function setMinRange(displayElem, value) {
-  var text = Math.round(value * maxGoodPrice / rangeFilter.offsetWidth);
-  displayElem.textContent = text;
+  var onMouseUp = function () {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
+
+function moveSide(evt) {
+  if (evt.pageX < oldx) {
+    direction = 'left';
+  } else if (evt.pageX > oldx) {
+    direction = 'right';
+  }
+  oldx = evt.pageX;
 }
-function setMaxRange(displayElem, value) {
+
+function setMinMaxRange(displayElem, value) {
   var text = Math.round(value * maxGoodPrice / rangeFilter.offsetWidth);
   displayElem.textContent = text;
 }
@@ -491,31 +482,6 @@ function colorRangeLeftPoint(value) {
 function colorRangeRightPoint(value) {
   rangeLine.style.right = rangeFilter.offsetWidth - value + 'px';
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* ***************
  FORM VALIDATION
