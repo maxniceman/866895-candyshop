@@ -1,5 +1,5 @@
 'use strict';
-window.filter = (function () {
+(function () {
   var minGoodPrice = 0;
   var maxGoodPrice = 1000;
   var rangeFilter = document.querySelector('.range__filter');

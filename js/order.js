@@ -1,6 +1,5 @@
 'use strict';
-window.order = (function () {
-
+(function () {
   var deliverContainer = document.querySelector('.deliver');
   var deliverToggle = deliverContainer.querySelector('.deliver__toggle');
   var submitBtn = document.querySelector('.buy__submit-btn');
