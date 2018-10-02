@@ -1,5 +1,8 @@
 'use strict';
 (function () {
+
+
+
   // render goods
   var renderGoods = function (good) {
     var cardItem = cardTemplate.cloneNode(true);
@@ -13,7 +16,7 @@
     }
 
     cardItem.querySelector('.card__title').textContent = good.name;
-    cardItem.querySelector('.card__img').src = good.picture;
+    cardItem.querySelector('.card__img').src = 'img/cards/' + good.picture;
 
     cardItem.querySelector('.card__price').innerHTML = good.price + ' <span class="card__currency">₽</span><span class="card__weight">/ ' + good.weight + ' Г</span>';
 
@@ -55,14 +58,7 @@
     .content
     .querySelector('.catalog__card');
 
-  // fill template
-  function fillTemplate(goodsArray) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < goodsArray.length; i++) {
-      fragment.appendChild(renderGoods(goodsArray[i]));
-    }
-    return fragment;
-  }
+
 
   // DOM manipulation for catalog cards
   var catalogCards = document.querySelector('.catalog__cards');
@@ -76,4 +72,25 @@
     var target = evt.target;
     target.classList.toggle('card__btn-favorite--selected');
   }
+  // fill template
+  function fillTemplate(goodsArray) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < goodsArray.length; i++) {
+      fragment.appendChild(renderGoods(goodsArray[i]));
+    }
+    return fragment;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
 })();
