@@ -2,7 +2,7 @@
 (function () {
 
 
-
+  console.log(window.goods);
   // render goods
   var renderGoods = function (good) {
     var cardItem = cardTemplate.cloneNode(true);

@@ -3,17 +3,6 @@
   var URL = 'https://js.dump.academy/candyshop';
   var URL_DATA = 'https://js.dump.academy/candyshop/data';
   window.backend = {
-    save: function (data, onSuccess) {
-      var xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
-
-      xhr.addEventListener('load', function () {
-        onSuccess(xhr.response);
-      });
-
-      xhr.open('POST', URL);
-      xhr.send(data);
-    },
     load: function (onSuccess, onError) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
@@ -36,6 +25,17 @@
 
       xhr.open('GET', URL_DATA);
       xhr.send();
+    },
+    save: function (data, onSuccess) {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+
+      xhr.addEventListener('load', function () {
+        onSuccess(xhr.response);
+      });
+
+      xhr.open('POST', URL);
+      xhr.send(data);
     }
   };
 })();
