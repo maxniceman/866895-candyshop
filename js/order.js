@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  var form = document.querySelector('.buy > form');
   var deliverContainer = document.querySelector('.deliver');
   var deliverToggle = deliverContainer.querySelector('.deliver__toggle');
   var submitBtn = document.querySelector('.buy__submit-btn');
@@ -78,4 +79,21 @@
   }
   var deliverCourierBox = document.querySelector('.deliver__courier');
   disableEnableFormElements(deliverCourierBox);
+
+  /* ****************
+   SEND ORDER
+   *****************/
+  var formData = new FormData(form);
+  var successHandler = function () {
+    window.modals.openModal(window.successModal);
+  };
+  var errorHandler = function (errorMessage) {
+    window.modals.openModal(window.errorModal, errorMessage);
+  };
+
+  form.addEventListener('submit', function (evt) {
+    window.backend.save(formData, successHandler, errorHandler);
+    form.reset();
+    evt.preventDefault();
+  });
 })();

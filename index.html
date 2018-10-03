@@ -200,62 +200,62 @@
             </div>
           </section>
 
-          <section class="payment">
-            <div class="payment__inner container">
-              <h3 class="payment__title">Как будешь платить?</h3>
+          <!--<section class="payment">-->
+            <!--<div class="payment__inner container">-->
+              <!--<h3 class="payment__title">Как будешь платить?</h3>-->
 
-              <p class="payment__method toggle-btn">
-                <input type="radio" class="toggle-btn__input visually-hidden" name="pay-method" value="card" id="payment__card" checked>
-                <label for="payment__card" class="toggle-btn__label">Банковская карта</label>
-                <input type="radio" class="toggle-btn__input visually-hidden" name="pay-method" value="cash" id="payment__cash">
-                <label for="payment__cash" class="toggle-btn__label">Наличные при получении</label>
-              </p>
+              <!--<p class="payment__method toggle-btn">-->
+                <!--<input type="radio" class="toggle-btn__input visually-hidden" name="pay-method" value="card" id="payment__card" checked>-->
+                <!--<label for="payment__card" class="toggle-btn__label">Банковская карта</label>-->
+                <!--<input type="radio" class="toggle-btn__input visually-hidden" name="pay-method" value="cash" id="payment__cash">-->
+                <!--<label for="payment__cash" class="toggle-btn__label">Наличные при получении</label>-->
+              <!--</p>-->
 
-              <div class="payment__card-wrap">
-                <div class="payment__inputs">
-                  <div class="payment__card-group">
-                    <p class="text-input text-input--light payment__input-wrap payment__input-wrap--card-number">
-                      <input type="text" class="text-input__input" minlength="16" maxlength="16" pattern="^[ 0-9]+$" name="card-number" id="payment__card-number" required placeholder="Номер карты">
-                      <label class="text-input__label" for="payment__card-number">Номер карты</label>
-                    </p>
+              <!--<div class="payment__card-wrap">-->
+                <!--<div class="payment__inputs">-->
+                  <!--<div class="payment__card-group">-->
+                    <!--<p class="text-input text-input&#45;&#45;light payment__input-wrap payment__input-wrap&#45;&#45;card-number">-->
+                      <!--<input type="text" class="text-input__input" minlength="16" maxlength="16" pattern="^[ 0-9]+$" name="card-number" id="payment__card-number" required placeholder="Номер карты">-->
+                      <!--<label class="text-input__label" for="payment__card-number">Номер карты</label>-->
+                    <!--</p>-->
 
-                    <p class="text-input text-input--light payment__input-wrap payment__input-wrap--card-date">
-                      <input type="text" class="text-input__input" minlength="5" maxlength="5" pattern="\d{2}[\/]\d{2}" name="card-date" id="payment__card-date" required placeholder="мм/гг">
-                      <label class="text-input__label" for="payment__card-date">мм/гг</label>
-                    </p>
+                    <!--<p class="text-input text-input&#45;&#45;light payment__input-wrap payment__input-wrap&#45;&#45;card-date">-->
+                      <!--<input type="text" class="text-input__input" minlength="5" maxlength="5" pattern="\d{2}[\/]\d{2}" name="card-date" id="payment__card-date" required placeholder="мм/гг">-->
+                      <!--<label class="text-input__label" for="payment__card-date">мм/гг</label>-->
+                    <!--</p>-->
 
-                    <p class="text-input text-input--light payment__input-wrap payment__input-wrap--cvc">
-                      <input type="text" class="text-input__input" pattern="[0-9]{3}" name="card-cvc" id="payment__card-cvc" required placeholder="CVC">
-                      <label class="text-input__label text-input__label--lock" for="payment__card-cvc">CVC</label>
-                    </p>
+                    <!--<p class="text-input text-input&#45;&#45;light payment__input-wrap payment__input-wrap&#45;&#45;cvc">-->
+                      <!--<input type="text" class="text-input__input" pattern="[0-9]{3}" name="card-cvc" id="payment__card-cvc" required placeholder="CVC">-->
+                      <!--<label class="text-input__label text-input__label&#45;&#45;lock" for="payment__card-cvc">CVC</label>-->
+                    <!--</p>-->
 
-                  </div>
-                  <div class="payment__cardholder-group">
-                    <p class="text-input text-input--light payment__input-wrap payment__input-wrap--cardholder">
-                      <input type="text" class="text-input__input" name="cardholder" id="payment__cardholder" required placeholder="ИМЯ ДЕРЖАТЕЛЯ">
-                      <label class="text-input__label" for="payment__cardholder">ИМЯ ДЕРЖАТЕЛЯ</label>
-                    </p>
+                  <!--</div>-->
+                  <!--<div class="payment__cardholder-group">-->
+                    <!--<p class="text-input text-input&#45;&#45;light payment__input-wrap payment__input-wrap&#45;&#45;cardholder">-->
+                      <!--<input type="text" class="text-input__input" name="cardholder" id="payment__cardholder" required placeholder="ИМЯ ДЕРЖАТЕЛЯ">-->
+                      <!--<label class="text-input__label" for="payment__cardholder">ИМЯ ДЕРЖАТЕЛЯ</label>-->
+                    <!--</p>-->
 
-                    <div class="payment__card-status-wrap">
-                      <p class="payment__card-status-message">Статус карты: <span class="payment__card-status">Не определён</span></p>
-                      <p class="payment__error-message visually-hidden">Система определяет ошибку и пишет где ошибка под неправильным полем</p>
-                    </div>
+                    <!--<div class="payment__card-status-wrap">-->
+                      <!--<p class="payment__card-status-message">Статус карты: <span class="payment__card-status">Не определён</span></p>-->
+                      <!--<p class="payment__error-message visually-hidden">Система определяет ошибку и пишет где ошибка под неправильным полем</p>-->
+                    <!--</div>-->
 
-                  </div>
-                </div>
-                <div class="describe">
-                  <p class="describe__text"><b>Мы гарантируем безопасностной твоих данных.</b></p>
-                  <p class="describe__text">Все данные банковской карты вводи точно как написано на карте.</p>
-                  <p class="describe__text">Не волнуйся, наша система поможет с заполеннием.</p>
-                  <p class="describe__text">После заполнения всех полей, система проверит функционирование карты и можно переходить к доставке.</p>
-                </div>
-              </div>
+                  <!--</div>-->
+                <!--</div>-->
+                <!--<div class="describe">-->
+                  <!--<p class="describe__text"><b>Мы гарантируем безопасностной твоих данных.</b></p>-->
+                  <!--<p class="describe__text">Все данные банковской карты вводи точно как написано на карте.</p>-->
+                  <!--<p class="describe__text">Не волнуйся, наша система поможет с заполеннием.</p>-->
+                  <!--<p class="describe__text">После заполнения всех полей, система проверит функционирование карты и можно переходить к доставке.</p>-->
+                <!--</div>-->
+              <!--</div>-->
 
-              <p class="payment__cash-wrap visually-hidden">
-                <b>Принимаем только рубли.</b> Валюту не предлагать, можем не устоять.
-              </p>
-            </div>
-          </section>
+              <!--<p class="payment__cash-wrap visually-hidden">-->
+                <!--<b>Принимаем только рубли.</b> Валюту не предлагать, можем не устоять.-->
+              <!--</p>-->
+            <!--</div>-->
+          <!--</section>-->
 
           <section class="deliver container">
             <h3 class="deliver__title">А что с доставкой?</h3>
@@ -401,16 +401,16 @@
     </div>
   </footer>
 
-  <section class="modal modal--hidden">
+  <section class="modal modal--error modal--hidden">
     <div class="modal__inner">
       <button class="modal__close" type="button">Закрыть окно</button>
       <h3 class="modal__title">Произошла ошибка!</h3>
-      <p class="modal__message">Код ошибки: 404.</p>
+      <p class="modal__message modal__message--error">Код ошибки: 404.</p>
       <p class="modal__message">Пожалуйста, перезагрузите страницу.</p>
     </div>
   </section>
 
-  <section class="modal modal--hidden">
+  <section class="modal modal--success modal--hidden">
     <div class="modal__inner">
       <button class="modal__close" type="button">Закрыть окно</button>
       <h3 class="modal__title">Данные успешно отправлены!</h3>
@@ -485,9 +485,11 @@
 
   <script src="js/backend.js"></script>
   <script src="js/data.js"></script>
+  <script src="js/util.js"></script>
   <script src="js/catalog.js"></script>
   <script src="js/basket.js"></script>
   <script src="js/order.js"></script>
   <script src="js/filter.js"></script>
+  <script src="js/modals.js"></script>
 </body>
 </html>

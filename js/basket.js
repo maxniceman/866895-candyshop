@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+
   var goodsInBasket = [];
   window.basket = {
     buyGood: function (evt, obj) {
@@ -94,7 +95,7 @@
   var renderBasketGoods = function (good) {
     var cardBasketItem = basketCardTemplate.cloneNode(true);
     cardBasketItem.querySelector('.card-order__title').textContent = good.name;
-    cardBasketItem.querySelector('.card-order__img').src = good.picture;
+    cardBasketItem.querySelector('.card-order__img').src = 'img/cards/' + good.picture;
     cardBasketItem.querySelector('.card-order__price').innerHTML = good.price + ' <span class="card__currency">₽</span>';
     cardBasketItem.querySelector('.card-order__count').value = 1;
     cardBasketItem.querySelector('.card-order__close').addEventListener('click', function (evt) {

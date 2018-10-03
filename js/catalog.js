@@ -1,8 +1,22 @@
 'use strict';
 (function () {
 
+  var goods = [];
 
-  console.log(window.goods);
+  window.catalog = {
+    // fill template
+    fillTemplate: function (goodsArray) {
+      var fragment = document.createDocumentFragment();
+      for (var i = 0; i < goodsArray.length; i++) {
+        goods.push(goodsArray[i]);
+        fragment.appendChild(renderGoods(goodsArray[i]));
+      }
+      catalogCards.appendChild(fragment);
+    }
+  };
+
+  window.goods = goods;
+
   // render goods
   var renderGoods = function (good) {
     var cardItem = cardTemplate.cloneNode(true);
@@ -58,12 +72,10 @@
     .content
     .querySelector('.catalog__card');
 
-
-
   // DOM manipulation for catalog cards
   var catalogCards = document.querySelector('.catalog__cards');
   catalogCards.classList.remove('catalog__cards--load');
-  catalogCards.appendChild(fillTemplate(window.goods));
+
   // hide loading data message
   catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
 
@@ -72,25 +84,5 @@
     var target = evt.target;
     target.classList.toggle('card__btn-favorite--selected');
   }
-  // fill template
-  function fillTemplate(goodsArray) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < goodsArray.length; i++) {
-      fragment.appendChild(renderGoods(goodsArray[i]));
-    }
-    return fragment;
-  }
-
-
-
-
-
-
-
-
-
-
-
-
 
 })();
