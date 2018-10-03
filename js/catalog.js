@@ -1,5 +1,22 @@
 'use strict';
 (function () {
+
+  var goods = [];
+
+  window.catalog = {
+    // fill template
+    fillTemplate: function (goodsArray) {
+      var fragment = document.createDocumentFragment();
+      for (var i = 0; i < goodsArray.length; i++) {
+        goods.push(goodsArray[i]);
+        fragment.appendChild(renderGoods(goodsArray[i]));
+      }
+      catalogCards.appendChild(fragment);
+    }
+  };
+
+  window.goods = goods;
+
   // render goods
   var renderGoods = function (good) {
     var cardItem = cardTemplate.cloneNode(true);
@@ -13,7 +30,7 @@
     }
 
     cardItem.querySelector('.card__title').textContent = good.name;
-    cardItem.querySelector('.card__img').src = good.picture;
+    cardItem.querySelector('.card__img').src = 'img/cards/' + good.picture;
 
     cardItem.querySelector('.card__price').innerHTML = good.price + ' <span class="card__currency">₽</span><span class="card__weight">/ ' + good.weight + ' Г</span>';
 
@@ -55,19 +72,10 @@
     .content
     .querySelector('.catalog__card');
 
-  // fill template
-  function fillTemplate(goodsArray) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < goodsArray.length; i++) {
-      fragment.appendChild(renderGoods(goodsArray[i]));
-    }
-    return fragment;
-  }
-
   // DOM manipulation for catalog cards
   var catalogCards = document.querySelector('.catalog__cards');
   catalogCards.classList.remove('catalog__cards--load');
-  catalogCards.appendChild(fillTemplate(window.goods));
+
   // hide loading data message
   catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
 
@@ -76,4 +84,5 @@
     var target = evt.target;
     target.classList.toggle('card__btn-favorite--selected');
   }
+
 })();
