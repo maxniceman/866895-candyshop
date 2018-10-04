@@ -1,7 +1,7 @@
 'use strict';
 (function () {
   var minGoodPrice = 0;
-  var maxGoodPrice = 1000;
+  var maxGoodPrice = 100;
   var rangeFilter = document.querySelector('.range__filter');
   var rangeLine = document.querySelector('.range__fill-line');
   var leftRangePrice = document.querySelector('.range__btn--left');
@@ -113,4 +113,28 @@
   function colorRangeRightPoint(value) {
     rangeLine.style.right = rangeFilter.offsetWidth - value + 'px';
   }
+
+
+
+  var mostPopularFilterBtn = document.querySelector('#filter-popular');
+  mostPopularFilterBtn.addEventListener('click', function (evt) {
+
+  })
+
+  var mostExpensiveFilterBtn = document.querySelector('#filter-expensive');
+  mostExpensiveFilterBtn.addEventListener('change', function (evt) {
+    var goodsPrices = window.goods.sort(compareNumeric);
+    window.catalog.fillTemplate(goodsPrices);
+    console.log(goodsPrices);
+  })
+
+  // var goodsPrices = window.goods.filter(function (good) {
+  //   return parseInt(good.price) >= 0;
+  // }).sort(compareNumeric);
+
+  function compareNumeric(a, b) {
+    if (a.price < b.price) return 1;
+    if (a.price > b.price) return -1;
+  }
+
 })();

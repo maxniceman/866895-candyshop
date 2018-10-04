@@ -7,6 +7,7 @@
     // fill template
     fillTemplate: function (goodsArray) {
       var fragment = document.createDocumentFragment();
+      catalogCards.innerHTML = '';
       for (var i = 0; i < goodsArray.length; i++) {
         goods.push(goodsArray[i]);
         fragment.appendChild(renderGoods(goodsArray[i]));
@@ -16,6 +17,7 @@
   };
 
   window.goods = goods;
+  console.log(goods);
 
   // render goods
   var renderGoods = function (good) {
