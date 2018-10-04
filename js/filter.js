@@ -114,27 +114,58 @@
     rangeLine.style.right = rangeFilter.offsetWidth - value + 'px';
   }
 
-
-
+  //сначала популярные
   var mostPopularFilterBtn = document.querySelector('#filter-popular');
   mostPopularFilterBtn.addEventListener('click', function (evt) {
 
-  })
+  });
 
+  // сначала дорогие
   var mostExpensiveFilterBtn = document.querySelector('#filter-expensive');
   mostExpensiveFilterBtn.addEventListener('change', function (evt) {
-    var goodsPrices = window.goods.sort(compareNumeric);
-    window.catalog.fillTemplate(goodsPrices);
-    console.log(goodsPrices);
-  })
+    var goodsPrices = window.goods.sort(compareNumbersDescending);
+    window.catalog.fillTemplate2(goodsPrices);
+  });
+
+  // сначала дешевые
+  var mostCheapFilterBtn = document.querySelector('#filter-cheep');
+  mostCheapFilterBtn.addEventListener('change', function (evt) {
+    var goodsPrices = window.goods.sort(compareNumbersAscending);
+    window.catalog.fillTemplate2(goodsPrices);
+  });
+
+  // по рейтингу
+  var mostRatingFilterBtn = document.querySelector('#filter-rating');
+  mostRatingFilterBtn.addEventListener('change', function (evt) {
+    var goodsRating = window.goods.sort(compareRating)//.sort(compareVoices);
+    var goodsVoices = goodsRating.sort(compareVoices);
+    console.log('rating');
+    console.log(goodsVoices);
+    // console.log(goodsPrices.map(function (good) {
+    //   return good.rating.value;
+    // }));
+    window.catalog.fillTemplate2(goodsVoices);
+  });
 
   // var goodsPrices = window.goods.filter(function (good) {
   //   return parseInt(good.price) >= 0;
   // }).sort(compareNumeric);
 
-  function compareNumeric(a, b) {
+  function compareNumbersDescending(a, b) {
     if (a.price < b.price) return 1;
     if (a.price > b.price) return -1;
+  }
+  function compareNumbersAscending(a, b) {
+    if (a.price > b.price) return 1;
+    if (a.price < b.price) return -1;
+  }
+  function compareRating(a, b) {
+    if (a.rating.value < b.rating.value) return 1;
+    if (a.rating.value > b.rating.value) return -1;
+  }
+  function compareVoices(a, b) {
+    if (a.rating.number < b.rating.number) return 1;
+    if (a.rating.number > b.rating.number) return -1;
   }
 
 })();

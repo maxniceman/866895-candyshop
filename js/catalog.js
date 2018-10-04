@@ -13,6 +13,14 @@
         fragment.appendChild(renderGoods(goodsArray[i]));
       }
       catalogCards.appendChild(fragment);
+    },
+    fillTemplate2: function (goodsArray) {
+      var fragment = document.createDocumentFragment();
+      catalogCards.innerHTML = '';
+      for (var i = 0; i < goodsArray.length; i++) {
+        fragment.appendChild(renderGoods(goodsArray[i]));
+      }
+      catalogCards.appendChild(fragment);
     }
   };
 
