@@ -1,31 +1,34 @@
 'use strict';
 (function () {
 
+  var getFirstData = true;
   var goods = [];
 
   window.catalog = {
     // fill template
     fillTemplate: function (goodsArray) {
+
       var fragment = document.createDocumentFragment();
       catalogCards.innerHTML = '';
       for (var i = 0; i < goodsArray.length; i++) {
-        goods.push(goodsArray[i]);
+        if (getFirstData) {
+
+          window.filter.fillFilterSection(goodsArray[i]);
+          window.filter.fillInStockGoods(goodsArray[i]);
+          goods.push(goodsArray[i]);
+
+        }
         fragment.appendChild(renderGoods(goodsArray[i]));
       }
       catalogCards.appendChild(fragment);
-    },
-    fillTemplate2: function (goodsArray) {
-      var fragment = document.createDocumentFragment();
-      catalogCards.innerHTML = '';
-      for (var i = 0; i < goodsArray.length; i++) {
-        fragment.appendChild(renderGoods(goodsArray[i]));
-      }
-      catalogCards.appendChild(fragment);
+      getFirstData = false;
     }
   };
 
   window.goods = goods;
   console.log(goods);
+
+
 
   // render goods
   var renderGoods = function (good) {
@@ -63,11 +66,13 @@
       cardCharacteristic.textContent = 'Содержит сахар';
     }
     cardItem.querySelector('.card__composition-list').textContent = good.nutritionFacts.contents;
-
+    if (good.isFavorite) {
+      cardItem.querySelector('.card__btn-favorite').classList.add('card__btn-favorite--selected');
+    }
     // add to favorite button
     var btnFavorite = cardItem.querySelector('.card__btn-favorite');
     btnFavorite.addEventListener('click', function (evt) {
-      addToFavorite(evt);
+      addToFavorite(evt, good);
     });
 
     // buy btn
@@ -89,10 +94,39 @@
   // hide loading data message
   catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
 
-  function addToFavorite(evt) {
+  // var favoriteGoods = [];
+  // function addToFavorite(evt,good) {
+  //   evt.preventDefault();
+  //   var target = evt.target;
+  //   var toggleClass = 'card__btn-favorite--selected';
+  //   if (target.classList.contains(toggleClass)) {
+  //     target.classList.toggle(toggleClass);
+  //     favoriteGoods.splice(window.util.findInArray(favoriteGoods, good), 1);
+  //   }else {
+  //     target.classList.toggle(toggleClass);
+  //     favoriteGoods.push(good);
+  //   }
+  //   console.log(favoriteGoods);
+  // }
+  // window.favoriteGoods = favoriteGoods;
+
+  function addToFavorite(evt,good) {
     evt.preventDefault();
     var target = evt.target;
-    target.classList.toggle('card__btn-favorite--selected');
+    var toggleClass = 'card__btn-favorite--selected';
+    if (target.classList.contains(toggleClass)) {
+      target.classList.toggle(toggleClass);
+      delete good.isFavorite;
+      window.filter.countFavoritedGoods(evt);
+    }else {
+      target.classList.toggle(toggleClass);
+      good.isFavorite = true;
+      window.filter.countFavoritedGoods(evt);
+    }
+    console.log(window.goods);
   }
+
+
+  // goodsInBasket.splice(findInArray(goodsInBasket, elem), 1);
 
 })();

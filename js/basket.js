@@ -18,6 +18,8 @@
         obj.amount -= 1;
         if (obj.amount === 0) {
           parent.classList.add('card--soon');
+          window.filter.countInStockGoods(obj);
+
         }
 
         if (goodsInBasket.length > 0) {
@@ -54,15 +56,6 @@
       }
     }
     return found;
-  }
-  // find item in Array
-  function findInArray(array, value) {
-    for (var i = 0; i < array.length; i++) {
-      if (array[i] === value) {
-        return i;
-      }
-    }
-    return -1;
   }
 
   function findObjectByIndex(data, property, value) {
@@ -117,8 +110,11 @@
     var target = evt.target;
     var parent = target.parentNode;
     parent.remove();
+    if (window.goods[findObjectByIndex(window.goods, 'name', elem.name)].amount === 0) {
+      window.filter.countInStockGoods(elem);
+    }
     returnAmountToGood(elem);
-    goodsInBasket.splice(findInArray(goodsInBasket, elem), 1);
+    goodsInBasket.splice(window.util.findInArray(goodsInBasket, elem), 1);
     updateHeaderBasketInfo();
     if (cardsInBasket.querySelectorAll('.goods_card').length === 0) {
       changingInBasket = false;
@@ -146,8 +142,12 @@
     var target = evt.target;
     var parent = target.parentNode;
     var input = parent.querySelector('.card-order__count');
-    input.value = parseInt(input.value, 10) + 1;
-    elem.orderedAmount += 1;
+    if (window.goods[findObjectByIndex(window.goods, 'name', elem.name)].amount > 0) {
+      input.value = parseInt(input.value, 10) + 1;
+      elem.orderedAmount += 1;
+      window.goods[findObjectByIndex(window.goods, 'name', elem.name)].amount -= 1;
+      updateHeaderBasketInfo();
+    }
   }
   // TODO decrease
   function decreaseItem(evt, elem) {
