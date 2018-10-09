@@ -176,7 +176,7 @@
     if (goods.length > 0) {
       catalog.fillTemplate(goods);
     } else {
-      shotEmptyFiltersMessage();
+      showEmptyFiltersMessage();
     }
   }
 
@@ -261,22 +261,22 @@
   //Жевательная резинка
   var gumFilterBtn = document.querySelector('#filter-gum');
   gumFilterBtn.addEventListener('change', function (evt) {
-    filterByComposition(evt);
-    //filterProducts(filterGum);
+    //filterByComposition(evt);
+    filterProducts2(filterGum);
   });
 
   //Мармелад
   var marmaladeFilterBtn = document.querySelector('#filter-marmalade');
   marmaladeFilterBtn.addEventListener('change', function (evt) {
-    filterByComposition(evt);
-    //filterProducts(filterMarmalade);
+    //filterByComposition(evt);
+    filterProducts2(filterMarmalade);
   });
 
   //Зефир
   var marshmallowsFilterBtn = document.querySelector('#filter-marshmallows');
   marshmallowsFilterBtn.addEventListener('change', function (evt) {
-    filterByComposition(evt);
-    //filterProducts(filterMarshmallows);
+    //filterByComposition(evt);
+    filterProducts2(filterMarshmallows);
   });
 
   var filterIceCream = function (good) {return good.kind === 'Мороженое';};
@@ -300,16 +300,28 @@
     } else {
       someFilters.splice(window.util.findInArray(someFilters, func), 1);
     }
-    var filteredData = someFilters.reduce(function(d, f) {
-      return d.filter(f);
-    }, window.goods);
+    if (filteredGoods.length > 0) {
+      var filteredData = someFilters.reduce(function(d, f) {
+        return d.filter(f);
+      }, filteredGoods);
+    } else {
+      var filteredData = someFilters.reduce(function(d, f) {
+        return d.filter(f);
+      }, window.goods);
+    }
+    
+    if (filteredData.length === 0) {
+      showEmptyFiltersMessage();
+    }else {
+      console.log(someFilters);
+      console.log(filteredData);
+      catalog.fillTemplate(filteredData);
+    }
 
-    console.log(someFilters);
-    console.log(filteredData);
-    catalog.fillTemplate(filteredData);
+    
   }
 
-  var final = [];
+
   function filterProducts2(func) {
     var findedObj = window.util.findInArray(someFilters, func);
     if (findedObj < 0 || someFilters.length === 0) {
@@ -318,14 +330,26 @@
       someFilters.splice(window.util.findInArray(someFilters, func), 1);
     }
     //var filteredData = window.goods.filter(func);
-    var filteredData = someFilters.reduce(function(d, f) {
-      return d.filter(f);
-    }, window.goods);
-    console.log(filteredData);
-    final.push(filteredData);
+    // var filteredData = someFilters.reduce(function(d, f) {
+    //   return d.filter(f);
+    // }, window.goods);
 
-    console.log(final);
-    //catalog.fillTemplate(final);
+    // var filteredData = window.goods.reduce(function(acc, current) {
+    //
+    //   //return acc.concat(current.filter(func));
+    //   //return f.filter(d);
+    // });
+
+    var filteredData = window.goods.filter(func);
+    for (var i=0; i<filteredData.length; i++) {
+      if ( window.util.findInArray(filteredGoods, filteredData[i]) < 0){
+        filteredGoods.push(filteredData[i]);
+      } else {
+        filteredGoods.splice(window.util.findInArray(filteredGoods, filteredData[i]), 1);
+      }
+    }
+     console.log(filteredGoods);
+     catalog.fillTemplate(filteredGoods);
   }
 
 
@@ -506,7 +530,7 @@
       window.catalog.fillTemplate(goods);
 
     } else {
-      shotEmptyFiltersMessage();
+      showEmptyFiltersMessage();
     }
     sideBarForm.reset();
     resetSortingFilters('sort');
@@ -620,7 +644,7 @@
   var emptyFiltersTemplate = document.querySelector('#empty-filters')
     .content
     .querySelector('.catalog__empty-filter');
-  function shotEmptyFiltersMessage() {
+  function showEmptyFiltersMessage() {
     catalogCards.innerHTML = '';
     catalogCards.appendChild(emptyFiltersTemplate);
     console.log(emptyFiltersTemplate);
